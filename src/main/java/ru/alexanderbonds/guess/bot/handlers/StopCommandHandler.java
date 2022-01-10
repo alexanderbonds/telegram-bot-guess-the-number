@@ -15,7 +15,7 @@ public class StopCommandHandler implements CommandHandler {
         Long senderId = message.from().id();
         Game game = games.get(senderId);
 
-        if (game != null) {
+        if (game != null && game.isAlive()) {
             int numberToGuess = game.getNumberToGuess();
             games.remove(senderId);
             return new SendMessage(chatId, String.format("Your game terminated, correct answer was %d.", numberToGuess));

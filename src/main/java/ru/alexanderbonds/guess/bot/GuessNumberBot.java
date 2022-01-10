@@ -14,7 +14,7 @@ import ru.alexanderbonds.guess.bot.handlers.StatCommandHandler;
 import ru.alexanderbonds.guess.bot.handlers.StopCommandHandler;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,12 +25,12 @@ public class GuessNumberBot {
     private final Map<String, CommandHandler> handlers = new ConcurrentHashMap<>();
 
     public GuessNumberBot() {
-        List.of(
+        Arrays.asList(
+                new StopCommandHandler(),
                 new StartCommandHandler(),
                 new HelpCommandHandler(),
-                new GuessCommandHandler(),
                 new StatCommandHandler(),
-                new StopCommandHandler()
+                new GuessCommandHandler()
         ).forEach(handler -> handlers.put(handler.getCommand(), handler));
     }
 
@@ -50,7 +50,7 @@ public class GuessNumberBot {
         if (message != null) {
             String text = message.text();
 
-            if (text.startsWith("/")) {
+            if (text != null && text.startsWith("/")) {
                 String command = text.split(" ")[0];
 
                 if (handlers.containsKey(command)) {
