@@ -16,6 +16,10 @@ public class StartCommandHandler implements CommandHandler {
         Long senderId = message.from().id();
         String senderName = message.from().username();
 
+        if (games.containsKey(senderId)) {
+            return new SendMessage(chatId, "You already have active game, try to guess a number or /stop this game!");
+        }
+
         games.put(senderId, new Game());
         stats.computeIfAbsent(senderId, k -> new LinkedHashMap<>());
 
