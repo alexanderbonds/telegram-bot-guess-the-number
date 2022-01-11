@@ -20,6 +20,11 @@ public class GuessCommandHandler implements CommandHandler {
             if (arguments.length > 1) {
                 try {
                     int senderNumber = Integer.parseInt(arguments[1]);
+
+                    if (senderNumber < 1 || senderNumber > 100) {
+                        return new SendMessage(chatId, "Please enter valid number from 1 to 100!");
+                    }
+
                     int tryGuess = game.guess(senderNumber);
 
                     if (tryGuess == 0) {
