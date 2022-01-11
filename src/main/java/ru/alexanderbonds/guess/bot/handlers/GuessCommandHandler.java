@@ -32,7 +32,7 @@ public class GuessCommandHandler implements CommandHandler {
                     }
 
                 } catch (NumberFormatException e) {
-                    return new SendMessage(chatId, "Please enter a number, not a string!");
+                    return new SendMessage(chatId, "Please enter valid number from 1 to 100!");
                 }
             } else {
                 return new SendMessage(chatId, "Please enter number to guess!");
