@@ -21,7 +21,7 @@ public class StartCommandHandler implements CommandHandler {
         }
 
         games.put(senderId, new Game());
-        stats.computeIfAbsent(senderId, k -> new LinkedHashMap<>());
+        //stats.computeIfAbsent(senderId, k -> new LinkedHashMap<>());
 
         return new SendMessage(chatId, String.format("Hello, %s! New game started..\n"
                 + "You need to guess number from 1 to 100 that I've chosen.\n"

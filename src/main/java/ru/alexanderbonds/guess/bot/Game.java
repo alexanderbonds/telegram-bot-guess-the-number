@@ -3,7 +3,8 @@ package ru.alexanderbonds.guess.bot;
 import java.util.Random;
 
 public class Game {
-    private final int RANDOM_BOUND = 100;
+    private static final int RANDOM_BOUND = 100;
+
     private final int numberToGuess;
     private boolean alive;
     private int attempts;
@@ -15,6 +16,7 @@ public class Game {
 
     public int guess(int number) {
         if (number == numberToGuess) {
+            attempts++;
             alive = false;
             return 0;
         } else if (number < numberToGuess) {

@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import ru.alexanderbonds.guess.bot.Game;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class GuessCommandHandler implements CommandHandler {
@@ -28,7 +29,14 @@ public class GuessCommandHandler implements CommandHandler {
                     int tryGuess = game.guess(senderNumber);
 
                     if (tryGuess == 0) {
-                        stats.get(senderId).put(LocalDateTime.now(), game.getAttempts());
+                        stats.computeIfAbsent(
+                                senderId,
+                                k -> {
+                                    Map<LocalDateTime, Integer> map = new LinkedHashMap<>();
+                                    map.put(LocalDateTime.now(), game.getAttempts());
+                                    return map;
+                                }
+                        );
                         return new SendMessage(chatId, String.format("You won after %d attempts! Want to /start one more game?", game.getAttempts()));
                     } else if (tryGuess > 0) {
                         return new SendMessage(chatId, "Try lower!");

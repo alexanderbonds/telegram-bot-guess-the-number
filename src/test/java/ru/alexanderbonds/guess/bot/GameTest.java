@@ -1,8 +1,7 @@
 package ru.alexanderbonds.guess.bot;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,11 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GameTest {
 
     @Test
+    @DisplayName("guess() with lower number must return -1")
     void guess_lowerNumber_mustReturnMinusOne() {
         // Config
         Game game = new Game();
         int numberToGuess = game.getNumberToGuess();
-        int lowerNumber = new Random().nextInt(numberToGuess);
+        int lowerNumber = numberToGuess - 1;
 
         // Call
         int tryGuess = game.guess(lowerNumber);
@@ -26,11 +26,12 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("guess() with higher number must return 1")
     void guess_higherNumber_mustReturnPlusOne() {
         // Config
         Game game = new Game();
         int numberToGuess = game.getNumberToGuess();
-        int higherNumber = numberToGuess + new Random().nextInt(numberToGuess);
+        int higherNumber = numberToGuess + 1;
 
         // Call
         int tryGuess = game.guess(higherNumber);
@@ -40,6 +41,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("guess() with exact number must return 0")
     void guess_exactNumber_mustReturnZero() {
         // Config
         Game game = new Game();
@@ -53,6 +55,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("guess() with wrong number must increase attempts count by 1")
     void guess_wrongNumber_mustIncrementAttemptsByOne() {
         // Config
         Game game = new Game();
@@ -67,6 +70,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("guess() with wrong number must keep game alive")
     void guess_wrongNumber_mustKeepGameAlive() {
         // Config
         Game game = new Game();
@@ -80,6 +84,7 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("guess() with exact number must terminate game")
     void guess_exactNumber_mustTerminateGame() {
         // Config
         Game game = new Game();
