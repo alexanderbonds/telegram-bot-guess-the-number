@@ -37,6 +37,7 @@ public class GuessCommandHandler implements CommandHandler {
                                     return map;
                                 }
                         );
+                        games.remove(senderId);
                         return new SendMessage(chatId, String.format("You won after %d attempts! Want to /start one more game?", game.getAttempts()));
                     } else if (tryGuess > 0) {
                         return new SendMessage(chatId, "Try lower!");

@@ -2,6 +2,7 @@ package ru.alexanderbonds.guess.bot;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.alexanderbonds.guess.bot.factories.GameFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -14,7 +15,7 @@ class GameTest {
     @DisplayName("guess() with lower number must return -1")
     void guess_lowerNumber_mustReturnMinusOne() {
         // Config
-        Game game = new Game();
+        Game game = GameFactory.getTestGame();
         int numberToGuess = game.getNumberToGuess();
         int lowerNumber = numberToGuess - 1;
 
@@ -29,7 +30,7 @@ class GameTest {
     @DisplayName("guess() with higher number must return 1")
     void guess_higherNumber_mustReturnPlusOne() {
         // Config
-        Game game = new Game();
+        Game game = GameFactory.getTestGame();
         int numberToGuess = game.getNumberToGuess();
         int higherNumber = numberToGuess + 1;
 
@@ -44,7 +45,7 @@ class GameTest {
     @DisplayName("guess() with exact number must return 0")
     void guess_exactNumber_mustReturnZero() {
         // Config
-        Game game = new Game();
+        Game game = GameFactory.getTestGame();
         int exactNumber = game.getNumberToGuess();
 
         // Call
@@ -58,7 +59,7 @@ class GameTest {
     @DisplayName("guess() with wrong number must increase attempts count by 1")
     void guess_wrongNumber_mustIncrementAttemptsByOne() {
         // Config
-        Game game = new Game();
+        Game game = GameFactory.getTestGame();
         int wrongNumber = game.getNumberToGuess() + 1;
         int attempts = game.getAttempts();
 
@@ -73,7 +74,7 @@ class GameTest {
     @DisplayName("guess() with wrong number must keep game alive")
     void guess_wrongNumber_mustKeepGameAlive() {
         // Config
-        Game game = new Game();
+        Game game = GameFactory.getTestGame();
         int wrongNumber = game.getNumberToGuess() + 1;
 
         // Call
@@ -87,7 +88,7 @@ class GameTest {
     @DisplayName("guess() with exact number must terminate game")
     void guess_exactNumber_mustTerminateGame() {
         // Config
-        Game game = new Game();
+        Game game = GameFactory.getTestGame();
         int exactNumber = game.getNumberToGuess();
 
         // Call
