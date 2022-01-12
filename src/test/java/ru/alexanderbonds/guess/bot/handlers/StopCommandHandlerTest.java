@@ -5,9 +5,9 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.alexanderbonds.guess.bot.Game;
-import ru.alexanderbonds.guess.bot.models.MessageModel;
+import ru.alexanderbonds.guess.bot.factories.MessageFactory;
 
-import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,26 +16,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class StopCommandHandlerTest {
 
     @Test
-    @DisplayName("handle() with no active games should start new game")
-    void handle_noActiveGame_shouldStartNewGameAndReturnGreeting() {
+    @DisplayName("handle() with no active games should return warning")
+    void handle_noActiveGame_shouldReturnWarning() {
         // Config
         final StopCommandHandler handler = new StopCommandHandler();
-        final Message dummyMessage = MessageModel.getDummyMessage();
+        final Message dummyMessage = MessageFactory.getDummyMessage();
         final Map<Long, Game> games = new ConcurrentHashMap<>();
-        final Map<Long, Map<LocalDateTime, Integer>> stats = new ConcurrentHashMap<>();
-        final String expected = String.format("Hello, %s! New game started..\n"
-                + "You need to guess number from 1 to 100 that I've chosen.\n"
-                + "Please use /help for all commands. Good luck!", dummyMessage.from().username());
+        final String expected = "You have no games running.";
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, stats);
+        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
 
         // Verify
-        assertAll(
-                () -> assertTrue(games.containsKey(dummyMessage.from().id())),
-                () -> assertTrue(stats.containsKey(dummyMessage.from().id())),
-                () -> assertEquals(expected, request.getParameters().get("text"))
-        );
+        assertEquals(expected, request.getParameters().get("text"));
     }
 
     @Test
@@ -43,21 +36,19 @@ class StopCommandHandlerTest {
     void handle_hasActiveGame_shouldStopActiveGame() {
         // Config
         final StopCommandHandler handler = new StopCommandHandler();
-        final Message dummyMessage = MessageModel.getDummyMessage();
+        final Message dummyMessage = MessageFactory.getDummyMessage();
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final Game game = new Game();
-        final Map<Long, Map<LocalDateTime, Integer>> stats = new ConcurrentHashMap<>();
         final String expected = String.format("Your game terminated, correct answer was %d.", game.getNumberToGuess());
 
         games.put(dummyMessage.from().id(), game);
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, stats);
+        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
 
         // Verify
         assertAll(
                 () -> assertFalse(games.containsKey(dummyMessage.from().id())),
-                () -> assertFalse(stats.containsKey(dummyMessage.from().id())),
                 () -> assertEquals(expected, request.getParameters().get("text"))
         );
     }

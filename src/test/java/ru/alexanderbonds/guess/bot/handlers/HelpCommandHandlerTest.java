@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.request.BaseRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.alexanderbonds.guess.bot.models.MessageModel;
+import ru.alexanderbonds.guess.bot.factories.MessageFactory;
 
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ class HelpCommandHandlerTest {
     void handle_correctArguments_shouldReturnHelpText() {
         // Config
         final HelpCommandHandler handler = new HelpCommandHandler();
-        final Message dummyMessage = MessageModel.getDummyMessage();
+        final Message dummyMessage = MessageFactory.getDummyMessage();
         final String expected =
                 "/start - starts new game;\n" +
                 "/guess <number> - once game started, guess a number!\n" +

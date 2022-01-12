@@ -1,4 +1,4 @@
-package ru.alexanderbonds.guess.bot.utils;
+package ru.alexanderbonds.guess.bot.factories;
 
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.model.Message;
