@@ -20,12 +20,12 @@ class StopCommandHandlerTest {
     void handle_noActiveGame_shouldReturnWarning() {
         // Config
         final StopCommandHandler handler = new StopCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "You have no games running.";
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -36,19 +36,19 @@ class StopCommandHandlerTest {
     void handle_hasActiveGame_shouldStopActiveGame() {
         // Config
         final StopCommandHandler handler = new StopCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final Game game = new Game();
         final String expected = String.format("Your game terminated, correct answer was %d.", game.getNumberToGuess());
 
-        games.put(dummyMessage.from().id(), game);
+        games.put(message.from().id(), game);
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertAll(
-                () -> assertFalse(games.containsKey(dummyMessage.from().id())),
+                () -> assertFalse(games.containsKey(message.from().id())),
                 () -> assertEquals(expected, request.getParameters().get("text"))
         );
     }

@@ -33,14 +33,14 @@ public class DummyWebServer {
         // for eliminating Heroku Error R10 (no $PORT binding)
         final int port = Integer.parseInt(System.getenv("PORT"));
 
-        ExecutorService errorR10Executor = Executors.newSingleThreadExecutor();
+        final ExecutorService errorR10Executor = Executors.newSingleThreadExecutor();
         errorR10Executor.execute(() -> {
             try {
-                ServerSocket server = new ServerSocket(port);
+                final ServerSocket server = new ServerSocket(port);
                 logger.log(Level.INFO, "Dummy Web Server started on port {}", port);
                 while (true) {
-                    Socket socket = server.accept();
-                    BufferedWriter out = new BufferedWriter(
+                    final Socket socket = server.accept();
+                    final BufferedWriter out = new BufferedWriter(
                             new OutputStreamWriter(
                                     new BufferedOutputStream(socket.getOutputStream()), StandardCharsets.UTF_8)
                     );
@@ -55,7 +55,7 @@ public class DummyWebServer {
         });
 
         // Heroku free dynos get to sleep after 30 min of web inactivity
-        ScheduledThreadPoolExecutor inactivityExecutor = new ScheduledThreadPoolExecutor(1);
+        final ScheduledThreadPoolExecutor inactivityExecutor = new ScheduledThreadPoolExecutor(1);
         inactivityExecutor.scheduleAtFixedRate(
                 () -> logger.log(Level.INFO, "NO SLEEPING HERE!! {}", getUrlContent(HEROKU_SERVER_NAME)),
                 1,
@@ -66,7 +66,7 @@ public class DummyWebServer {
     private String getUrlContent(String url) {
         String result = "<html><body>Empty</body></html>";
         try (InputStream in = new BufferedInputStream(new URL(url).openStream())) {
-            byte[] content = in.readAllBytes();
+            final byte[] content = in.readAllBytes();
             result = new String(content, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.log(Level.ERROR, "Got an error while URL downloading: {}", e.getMessage());

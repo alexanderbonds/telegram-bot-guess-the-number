@@ -12,21 +12,21 @@ import java.util.Map;
 public class GuessCommandHandler implements CommandHandler {
     @Override
     public BaseRequest handle(Message message, Map<Long, Game> games, Map<Long, Map<LocalDateTime, Integer>> stats) {
-        Long chatId = message.chat().id();
-        Long senderId = message.from().id();
-        Game game = games.get(senderId);
-        String[] arguments = message.text().split(" ");
+        final Long chatId = message.chat().id();
+        final Long senderId = message.from().id();
+        final Game game = games.get(senderId);
+        final String[] arguments = message.text().split(" ");
 
         if (game != null && game.isAlive()) {
             if (arguments.length > 1) {
                 try {
-                    int senderNumber = Integer.parseInt(arguments[1]);
+                    final int senderNumber = Integer.parseInt(arguments[1]);
 
                     if (senderNumber < 1 || senderNumber > 100) {
                         return new SendMessage(chatId, "Please enter valid number from 1 to 100!");
                     }
 
-                    int tryGuess = game.guess(senderNumber);
+                    final int tryGuess = game.guess(senderNumber);
 
                     if (tryGuess == 0) {
                         stats.computeIfAbsent(

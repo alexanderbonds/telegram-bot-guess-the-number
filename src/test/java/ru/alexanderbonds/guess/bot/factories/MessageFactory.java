@@ -14,7 +14,7 @@ public class MessageFactory {
     private static final String MODEL_FILENAME = "src/test/resources/models/message.json";
     private static final String MODEL = readModelFromFile();
 
-    public static Message getDummyMessage() {
+    public static Message getMessage() {
         return gson.fromJson(MODEL, Message.class);
     }
 

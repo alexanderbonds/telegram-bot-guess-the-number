@@ -29,7 +29,7 @@ class DummyWebServerTest {
         localWebServer.start();
         final InputStream in = new BufferedInputStream(new URL(url).openStream());
         final byte[] byteContent = in.readAllBytes();
-        String content = new String(byteContent, StandardCharsets.UTF_8);
+        final String content = new String(byteContent, StandardCharsets.UTF_8);
         in.close();
 
         // Verify

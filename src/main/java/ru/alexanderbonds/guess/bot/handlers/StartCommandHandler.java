@@ -11,9 +11,9 @@ import java.util.Map;
 public class StartCommandHandler implements CommandHandler {
     @Override
     public BaseRequest handle(Message message, Map<Long, Game> games, Map<Long, Map<LocalDateTime, Integer>> stats) {
-        Long chatId = message.chat().id();
-        Long senderId = message.from().id();
-        String senderName = message.from().username();
+        final Long chatId = message.chat().id();
+        final Long senderId = message.from().id();
+        final String senderName = message.from().username();
 
         if (games.containsKey(senderId)) {
             return new SendMessage(chatId, "You already have active game, try to guess a number or /stop this game!");

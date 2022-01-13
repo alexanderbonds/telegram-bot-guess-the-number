@@ -22,7 +22,7 @@ class StatCommandHandlerTest {
     void handle_recordedGames_shouldReturnStatistic() {
         // Config
         final StatCommandHandler handler = new StatCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final Map<Long, Map<LocalDateTime, Integer>> stats = new ConcurrentHashMap<>();
         final LocalDateTime date = LocalDateTime.now();
         final String expected =
@@ -32,14 +32,14 @@ class StatCommandHandlerTest {
                 DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").format(date) +
                 " you've won after 1 attempts\n";
 
-        stats.computeIfAbsent(dummyMessage.from().id(), k -> {
+        stats.computeIfAbsent(message.from().id(), k -> {
             Map<LocalDateTime, Integer> map = new LinkedHashMap<>();
             map.put(date, 1);
             return map;
         });
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, new HashMap<>(), stats);
+        final BaseRequest request = handler.handle(message, new HashMap<>(), stats);
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -50,12 +50,12 @@ class StatCommandHandlerTest {
     void handle_noRecordedGames_shouldReturnWarning() {
         // Config
         final StatCommandHandler handler = new StatCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final Map<Long, Map<LocalDateTime, Integer>> stats = new ConcurrentHashMap<>();
         final String expected = "You have no game records. Feel free to /start your first game.";
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, new HashMap<>(), stats);
+        final BaseRequest request = handler.handle(message, new HashMap<>(), stats);
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));

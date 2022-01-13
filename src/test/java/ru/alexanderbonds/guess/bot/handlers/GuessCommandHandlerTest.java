@@ -9,6 +9,7 @@ import ru.alexanderbonds.guess.bot.factories.GameFactory;
 import ru.alexanderbonds.guess.bot.factories.MessageFactory;
 import ru.alexanderbonds.guess.bot.decorators.MessageWithCustomTextDecorator;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,11 +23,11 @@ class GuessCommandHandlerTest {
     void handle_noActiveGame_shouldReturnWarning() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final String expected = "You have no games running.";
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, new HashMap<>(), new HashMap<>());
+        final BaseRequest request = handler.handle(message, new HashMap<>(), new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -37,17 +38,17 @@ class GuessCommandHandlerTest {
     void handle_wrongNumber_shouldReturnWarning() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Message dummyMessage = new MessageWithCustomTextDecorator(
-                MessageFactory.getDummyMessage(),
+        final Message message = new MessageWithCustomTextDecorator(
+                MessageFactory.getMessage(),
                 "/guess " + Integer.MAX_VALUE
         );
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "Please enter valid number from 1 to 100!";
 
-        games.put(dummyMessage.from().id(), GameFactory.getTestGame());
+        games.put(message.from().id(), GameFactory.getGame());
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -58,17 +59,17 @@ class GuessCommandHandlerTest {
     void handle_noNumber_shouldReturnWarning() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Message dummyMessage = new MessageWithCustomTextDecorator(
-                MessageFactory.getDummyMessage(),
+        final Message message = new MessageWithCustomTextDecorator(
+                MessageFactory.getMessage(),
                 "/guess"
         );
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "Please enter number to guess!";
 
-        games.put(dummyMessage.from().id(), GameFactory.getTestGame());
+        games.put(message.from().id(), GameFactory.getGame());
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -79,17 +80,17 @@ class GuessCommandHandlerTest {
     void handle_textInsteadOfNumber_shouldReturnWarning() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Message dummyMessage = new MessageWithCustomTextDecorator(
-                MessageFactory.getDummyMessage(),
+        final Message message = new MessageWithCustomTextDecorator(
+                MessageFactory.getMessage(),
                 "/guess text_instead_of_number"
         );
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "Please enter valid number from 1 to 100!";
 
-        games.put(dummyMessage.from().id(), GameFactory.getTestGame());
+        games.put(message.from().id(), GameFactory.getGame());
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -100,19 +101,19 @@ class GuessCommandHandlerTest {
     void handle_lowerNumber_shouldReturnTryHigher() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Game game = GameFactory.getTestGame();
+        final Game game = GameFactory.getGame();
         final int lowerNumber = game.getNumberToGuess() - 1;
-        final Message dummyMessage = new MessageWithCustomTextDecorator(
-                MessageFactory.getDummyMessage(),
+        final Message message = new MessageWithCustomTextDecorator(
+                MessageFactory.getMessage(),
                 "/guess " + lowerNumber
         );
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "Try higher!";
 
-        games.put(dummyMessage.from().id(), game);
+        games.put(message.from().id(), game);
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
@@ -123,45 +124,54 @@ class GuessCommandHandlerTest {
     void handle_higherNumber_shouldReturnTryLower() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Game game = GameFactory.getTestGame();
+        final Game game = GameFactory.getGame();
         final int higherNumber = game.getNumberToGuess() + 1;
-        final Message dummyMessage = new MessageWithCustomTextDecorator(
-                MessageFactory.getDummyMessage(),
+        final Message message = new MessageWithCustomTextDecorator(
+                MessageFactory.getMessage(),
                 "/guess " + higherNumber
         );
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "Try lower!";
 
-        games.put(dummyMessage.from().id(), game);
+        games.put(message.from().id(), game);
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));
     }
 
     @Test
-    @DisplayName("handle() with exact number should return You won")
-    void handle_exactNumber_shouldReturnYouWon() {
+    @DisplayName("handle() with exact number should stop active game and return You won")
+    void handle_exactNumber_shouldStopActiveGameAndUpdateStatisticAndReturnYouWon() {
         // Config
         final GuessCommandHandler handler = new GuessCommandHandler();
-        final Game game = GameFactory.getTestGame();
+        final Game game = GameFactory.getGame();
         final int exactNumber = game.getNumberToGuess();
-        final Message dummyMessage = new MessageWithCustomTextDecorator(
-                MessageFactory.getDummyMessage(),
+        final Message message = new MessageWithCustomTextDecorator(
+                MessageFactory.getMessage(),
                 "/guess " + exactNumber
         );
         final Map<Long, Game> games = new ConcurrentHashMap<>();
-        final String expected = "You won after 1 attempts! Want to /start one more game?";
+        final Map<Long, Map<LocalDateTime, Integer>> stat = new ConcurrentHashMap<>();
+        final String expected = String.format(
+                "You won after %d attempts! Want to /start one more game?",
+                game.getAttempts() + 1
+        );
 
-        games.put(dummyMessage.from().id(), game);
+        games.put(message.from().id(), game);
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, stat);
 
         // Verify
-        assertEquals(expected, request.getParameters().get("text"));
+        assertAll(
+                () -> assertEquals(expected, request.getParameters().get("text")),
+                () -> assertFalse(games.containsKey(message.from().id())),
+                () -> assertTrue(stat.containsKey(message.from().id())),
+                () -> assertEquals(1, stat.get(message.from().id()).size())
+        );
     }
 
     @Test

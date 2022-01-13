@@ -13,10 +13,10 @@ import java.util.Map;
 public class StatCommandHandler implements CommandHandler {
     @Override
     public BaseRequest handle(Message message, Map<Long, Game> games, Map<Long, Map<LocalDateTime, Integer>> stats) {
-        Long chatId = message.chat().id();
-        Long senderId = message.from().id();
+        final Long chatId = message.chat().id();
+        final Long senderId = message.from().id();
 
-        Map<LocalDateTime, Integer> statMap = stats.get(senderId);
+        final Map<LocalDateTime, Integer> statMap = stats.get(senderId);
 
         if (statMap != null) {
             final StringBuilder builder = new StringBuilder("Your last five games:\n")

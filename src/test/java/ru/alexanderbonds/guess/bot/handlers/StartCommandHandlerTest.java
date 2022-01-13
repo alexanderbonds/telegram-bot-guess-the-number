@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import ru.alexanderbonds.guess.bot.Game;
 import ru.alexanderbonds.guess.bot.factories.MessageFactory;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,18 +20,18 @@ class StartCommandHandlerTest {
     void handle_noActiveGame_shouldStartNewGameAndReturnGreeting() {
         // Config
         final StartCommandHandler handler = new StartCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = String.format("Hello, %s! New game started..\n"
                 + "You need to guess number from 1 to 100 that I've chosen.\n"
-                + "Please use /help for all commands. Good luck!", dummyMessage.from().username());
+                + "Please use /help for all commands. Good luck!", message.from().username());
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertAll(
-                () -> assertTrue(games.containsKey(dummyMessage.from().id())),
+                () -> assertTrue(games.containsKey(message.from().id())),
                 () -> assertEquals(expected, request.getParameters().get("text"))
         );
     }
@@ -42,18 +41,18 @@ class StartCommandHandlerTest {
     void handle_hasActiveGame_shouldNotStartNewGameAndReturnWarning() {
         // Config
         final StartCommandHandler handler = new StartCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final Map<Long, Game> games = new ConcurrentHashMap<>();
         final String expected = "You already have active game, try to guess a number or /stop this game!";
 
-        games.put(dummyMessage.from().id(), new Game());
+        games.put(message.from().id(), new Game());
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, games, new HashMap<>());
+        final BaseRequest request = handler.handle(message, games, new HashMap<>());
 
         // Verify
         assertAll(
-                () -> assertTrue(games.containsKey(dummyMessage.from().id())),
+                () -> assertTrue(games.containsKey(message.from().id())),
                 () -> assertEquals(expected, request.getParameters().get("text"))
         );
     }

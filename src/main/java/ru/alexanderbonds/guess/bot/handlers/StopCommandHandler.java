@@ -11,12 +11,12 @@ import java.util.Map;
 public class StopCommandHandler implements CommandHandler {
     @Override
     public BaseRequest handle(Message message, Map<Long, Game> games, Map<Long, Map<LocalDateTime, Integer>> stats) {
-        Long chatId = message.chat().id();
-        Long senderId = message.from().id();
-        Game game = games.get(senderId);
+        final Long chatId = message.chat().id();
+        final Long senderId = message.from().id();
+        final Game game = games.get(senderId);
 
         if (game != null && game.isAlive()) {
-            int numberToGuess = game.getNumberToGuess();
+            final int numberToGuess = game.getNumberToGuess();
             games.remove(senderId);
             return new SendMessage(chatId, String.format("Your game terminated, correct answer was %d.", numberToGuess));
         } else {

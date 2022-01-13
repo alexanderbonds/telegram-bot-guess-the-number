@@ -15,12 +15,12 @@ class GameTest {
     @DisplayName("guess() with lower number must return -1")
     void guess_lowerNumber_mustReturnMinusOne() {
         // Config
-        Game game = GameFactory.getTestGame();
-        int numberToGuess = game.getNumberToGuess();
-        int lowerNumber = numberToGuess - 1;
+        final Game game = GameFactory.getGame();
+        final int numberToGuess = game.getNumberToGuess();
+        final int lowerNumber = numberToGuess - 1;
 
         // Call
-        int tryGuess = game.guess(lowerNumber);
+        final int tryGuess = game.guess(lowerNumber);
 
         // Verify
         assertEquals(-1, tryGuess);
@@ -30,12 +30,12 @@ class GameTest {
     @DisplayName("guess() with higher number must return 1")
     void guess_higherNumber_mustReturnPlusOne() {
         // Config
-        Game game = GameFactory.getTestGame();
-        int numberToGuess = game.getNumberToGuess();
-        int higherNumber = numberToGuess + 1;
+        final Game game = GameFactory.getGame();
+        final int numberToGuess = game.getNumberToGuess();
+        final int higherNumber = numberToGuess + 1;
 
         // Call
-        int tryGuess = game.guess(higherNumber);
+        final int tryGuess = game.guess(higherNumber);
 
         // Verify
         assertEquals(1, tryGuess);
@@ -45,11 +45,11 @@ class GameTest {
     @DisplayName("guess() with exact number must return 0")
     void guess_exactNumber_mustReturnZero() {
         // Config
-        Game game = GameFactory.getTestGame();
-        int exactNumber = game.getNumberToGuess();
+        final Game game = GameFactory.getGame();
+        final int exactNumber = game.getNumberToGuess();
 
         // Call
-        int tryGuess = game.guess(exactNumber);
+        final int tryGuess = game.guess(exactNumber);
 
         // Verify
         assertEquals(0, tryGuess);
@@ -59,9 +59,9 @@ class GameTest {
     @DisplayName("guess() with wrong number must increase attempts count by 1")
     void guess_wrongNumber_mustIncrementAttemptsByOne() {
         // Config
-        Game game = GameFactory.getTestGame();
-        int wrongNumber = game.getNumberToGuess() + 1;
-        int attempts = game.getAttempts();
+        final Game game = GameFactory.getGame();
+        final int wrongNumber = game.getNumberToGuess() + 1;
+        final int attempts = game.getAttempts();
 
         // Call
         game.guess(wrongNumber);
@@ -74,8 +74,8 @@ class GameTest {
     @DisplayName("guess() with wrong number must keep game alive")
     void guess_wrongNumber_mustKeepGameAlive() {
         // Config
-        Game game = GameFactory.getTestGame();
-        int wrongNumber = game.getNumberToGuess() + 1;
+        final Game game = GameFactory.getGame();
+        final int wrongNumber = game.getNumberToGuess() + 1;
 
         // Call
         game.guess(wrongNumber);
@@ -88,8 +88,8 @@ class GameTest {
     @DisplayName("guess() with exact number must terminate game")
     void guess_exactNumber_mustTerminateGame() {
         // Config
-        Game game = GameFactory.getTestGame();
-        int exactNumber = game.getNumberToGuess();
+        final Game game = GameFactory.getGame();
+        final int exactNumber = game.getNumberToGuess();
 
         // Call
         game.guess(exactNumber);

@@ -18,7 +18,7 @@ class HelpCommandHandlerTest {
     void handle_correctArguments_shouldReturnHelpText() {
         // Config
         final HelpCommandHandler handler = new HelpCommandHandler();
-        final Message dummyMessage = MessageFactory.getDummyMessage();
+        final Message message = MessageFactory.getMessage();
         final String expected =
                 "/start - starts new game;\n" +
                 "/guess <number> - once game started, guess a number!\n" +
@@ -26,7 +26,7 @@ class HelpCommandHandlerTest {
                 "/stat - show your last five results.";
 
         // Call
-        final BaseRequest request = handler.handle(dummyMessage, new HashMap<>(), new HashMap<>());
+        final BaseRequest request = handler.handle(message, new HashMap<>(), new HashMap<>());
 
         // Verify
         assertEquals(expected, request.getParameters().get("text"));

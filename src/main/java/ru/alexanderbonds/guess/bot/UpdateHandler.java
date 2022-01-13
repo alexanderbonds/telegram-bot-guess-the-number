@@ -22,28 +22,33 @@ public class UpdateHandler {
     private final Map<Long, Map<LocalDateTime, Integer>> stats = new ConcurrentHashMap<>();
 
     public UpdateHandler() {
-        List.of(
-                new StopCommandHandler(),
-                new StartCommandHandler(),
-                new HelpCommandHandler(),
-                new StatCommandHandler(),
-                new GuessCommandHandler()
-        ).forEach(handler -> handlers.put(handler.getCommand(), handler));
+        this(
+                List.of(
+                    new StopCommandHandler(),
+                    new StartCommandHandler(),
+                    new HelpCommandHandler(),
+                    new StatCommandHandler(),
+                    new GuessCommandHandler()
+        ));
+    }
+
+    public UpdateHandler(List<CommandHandler> commandHandlers) {
+        commandHandlers.forEach(handler -> handlers.put(handler.getCommand(), handler));
     }
 
     public BaseRequest handle(Update update) {
-        Message message = update.message();
+        final Message message = update.message();
 
         BaseRequest request = null;
 
         if (message != null) {
-            String text = message.text();
+            final String text = message.text();
 
             if (text != null && text.startsWith("/")) {
-                String command = text.split(" ")[0];
+                final String command = text.split(" ")[0];
 
                 if (handlers.containsKey(command)) {
-                    CommandHandler handler = handlers.get(command);
+                    final CommandHandler handler = handlers.get(command);
                     request = handler.handle(message, games, stats);
                 } else {
                     request = new SendMessage(message.chat().id(), "Command is not implemented, please refer to /help.");
