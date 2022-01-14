@@ -8,6 +8,7 @@ import ru.alexanderbonds.guess.bot.Game;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GuessCommandHandler implements CommandHandler {
     @Override
@@ -29,13 +30,10 @@ public class GuessCommandHandler implements CommandHandler {
                     final int tryGuess = game.guess(senderNumber);
 
                     if (tryGuess == 0) {
-                        stats.computeIfAbsent(
-                                senderId,
-                                k -> {
-                                    Map<LocalDateTime, Integer> map = new LinkedHashMap<>();
-                                    map.put(LocalDateTime.now(), game.getAttempts());
-                                    return map;
-                                }
+                        stats.computeIfAbsent(senderId, k -> new ConcurrentHashMap<>());
+                        stats.get(senderId).put(
+                                LocalDateTime.now(),
+                                game.getAttempts()
                         );
                         games.remove(senderId);
                         return new SendMessage(chatId, String.format("You won after %d attempts! Want to /start one more game?", game.getAttempts()));
